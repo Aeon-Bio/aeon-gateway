@@ -56,8 +56,12 @@ class AgenticSystemClient:
             data = response.json()
             agentic_response = AgenticSystemResponse(**data)
 
-            logger.info(f"✅ Received causal graph: {len(agentic_response.causal_graph.nodes)} nodes, "
-                       f"{len(agentic_response.causal_graph.edges)} edges")
+            if agentic_response.status == "success" and agentic_response.causal_graph:
+                logger.info(f"✅ Received causal graph: {len(agentic_response.causal_graph.nodes)} nodes, "
+                           f"{len(agentic_response.causal_graph.edges)} edges")
+            else:
+                logger.warning(f"⚠️  Agentic system returned status={agentic_response.status}, "
+                             f"error={agentic_response.error}")
 
             return agentic_response
 
@@ -109,8 +113,12 @@ class AgenticSystemClientSync:
             data = response.json()
             agentic_response = AgenticSystemResponse(**data)
 
-            logger.info(f"✅ Received causal graph: {len(agentic_response.causal_graph.nodes)} nodes, "
-                       f"{len(agentic_response.causal_graph.edges)} edges")
+            if agentic_response.status == "success" and agentic_response.causal_graph:
+                logger.info(f"✅ Received causal graph: {len(agentic_response.causal_graph.nodes)} nodes, "
+                           f"{len(agentic_response.causal_graph.edges)} edges")
+            else:
+                logger.warning(f"⚠️  Agentic system returned status={agentic_response.status}, "
+                             f"error={agentic_response.error}")
 
             return agentic_response
 
