@@ -81,7 +81,8 @@ aeon-gateway/
 │   ├── integration/
 │   │   └── test_gateway.py       ⏳ TODO: After temporal model
 │   └── conftest.py               ✅ Fixtures
-├── frontend/                     ⏳ TODO: Last phase
+├── frontend/
+│   └── index.html                  ✅ Demo/reference implementation
 ├── requirements.txt              ✅ Pinned dependencies
 ├── pytest.ini                    ✅ Test configuration
 ├── IMPLEMENTATION_GUIDE.md       ⭐ Step-by-step guide
@@ -129,11 +130,15 @@ Priority order:
    - `tests/integration/test_gateway.py`
    - `test_sarah_sf_to_la_query()` - MUST PASS
 
-### ⏳ Phase 3: Frontend (Last)
+### ✅ Phase 3: Demo Frontend (Complete)
 
-- Simple HTML + Chart.js for timeline
-- D3.js for causal graph (optional)
-- Wire to backend API
+- [x] Reference implementation (index.html)
+- [x] Chart.js timeline visualization
+- [x] Risk level indicators
+- [x] Causal explanations display
+- [x] Wired to backend API
+
+**Note**: `frontend/index.html` is a **demo/reference implementation** showing how to integrate with the API. Production UI should be built by your UI team following `docs/api/ui-integration-spec.md`
 
 ---
 
@@ -289,12 +294,16 @@ pkill -f uvicorn
 
 ## Documentation
 
+### For Implementation
 - **[IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)** - Complete implementation guide
 - **[docs/architecture/system-overview.md](./docs/architecture/system-overview.md)** - System architecture
 - **[docs/architecture/boundaries-and-contracts.md](./docs/architecture/boundaries-and-contracts.md)** - Interface specs
-- **[docs/api/agentic-system-spec.md](./docs/api/agentic-system-spec.md)** - External team spec
 - **[docs/testing/testing-strategy.md](./docs/testing/testing-strategy.md)** - Testing approach
 - **[docs/requirements/demo-scenario.md](./docs/requirements/demo-scenario.md)** - Demo data & script
+
+### For Integration Partners
+- **[docs/api/ui-integration-spec.md](./docs/api/ui-integration-spec.md)** - ⭐ UI team spec
+- **[docs/api/agentic-system-spec.md](./docs/api/agentic-system-spec.md)** - ⭐ Agentic system team spec
 
 ---
 
