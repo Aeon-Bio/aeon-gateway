@@ -8,6 +8,12 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from src.models.gateway import QueryRequest, GatewayResponse
 import uvicorn
+import os
+import logging
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Create FastAPI app
 app = FastAPI(
@@ -65,14 +71,27 @@ async def process_query(request: QueryRequest):
     3. Generate predictions via Monte Carlo simulation
     4. Return structured response
     """
-    from tests.mocks.agentic_system import MockAgenticSystem
     from src.temporal_model import TemporalModelEngine
+    from src.agentic_client import AgenticSystemClientSync
+    from tests.mocks.agentic_system import MockAgenticSystem
     import uuid
 
+    # Get agentic system URL from environment
+    agentic_url = os.getenv("AGENTIC_SYSTEM_URL")
+
     try:
-        # Step 1: Query agentic system (mocked for hackathon)
-        agentic_system = MockAgenticSystem()
-        agentic_response = agentic_system.query(request)
+        # Step 1: Query agentic system
+        if agentic_url:
+            # Production: Use real agentic system
+            logger.info(f"Using real agentic system: {agentic_url}")
+            agentic_system = AgenticSystemClientSync(base_url=agentic_url)
+            agentic_response = agentic_system.query(request)
+            agentic_system.close()
+        else:
+            # Development: Use mock
+            logger.info("Using mock agentic system (set AGENTIC_SYSTEM_URL to use real system)")
+            agentic_system = MockAgenticSystem()
+            agentic_response = agentic_system.query(request)
 
         if agentic_response.status != "success":
             raise HTTPException(
