@@ -99,6 +99,13 @@ async def process_query(request: QueryRequest):
                 detail=f"Agentic system error: {agentic_response.error}"
             )
 
+        # Check if causal graph is present
+        if not agentic_response.causal_graph:
+            raise HTTPException(
+                status_code=500,
+                detail="Agentic system returned no causal graph"
+            )
+
         # Step 2: Build temporal model
         engine = TemporalModelEngine(n_simulations=1000)
         model = engine.build_model(

@@ -96,10 +96,13 @@ class AgenticSystemClientSync:
 
         logger.info(f"Querying agentic system: {endpoint}")
 
+        payload = request.model_dump()
+        logger.debug(f"Request payload: {payload}")
+
         try:
             response = self.client.post(
                 endpoint,
-                json=request.model_dump()
+                json=payload
             )
             response.raise_for_status()
 

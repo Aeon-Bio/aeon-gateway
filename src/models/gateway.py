@@ -96,8 +96,8 @@ class AgenticSystemResponse(BaseModel):
     request_id: str
     status: str  # success | error
     causal_graph: Optional[CausalGraph] = None
-    metadata: Dict
-    explanations: List[str]
+    metadata: Optional[Dict] = Field(default_factory=dict)
+    explanations: Optional[List[str]] = Field(default_factory=list)
     error: Optional[Dict] = None  # Only present if status="error"
 
     @field_validator('status')
