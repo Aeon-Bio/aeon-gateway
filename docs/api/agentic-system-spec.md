@@ -51,13 +51,15 @@ An API endpoint that:
         "city": "San Francisco",
         "state": "CA",
         "start_date": "2023-01-01",
-        "end_date": "2024-01-01"
+        "end_date": "2024-01-01",
+        "avg_pm25": 7.8
       },
       {
         "city": "Los Angeles",
         "state": "CA",
         "start_date": "2024-01-01",
-        "end_date": null
+        "end_date": null,
+        "avg_pm25": 34.5
       }
     ]
   },
@@ -121,7 +123,8 @@ An API endpoint that:
 | `user_context.user_id` | **Yes** | - | Unique user identifier |
 | `user_context.genetics` | **Yes** | - | Genetic variants (can be `{}`) |
 | `user_context.current_biomarkers` | **Yes** | - | Baseline biomarker values |
-| `user_context.location_history` | **Yes** | - | Location history (can be `[]`) |
+| `user_context.location_history` | **Yes** | - | Location history with PM2.5 data |
+| `location_history[].avg_pm25` | **Yes** | - | Average PM2.5 (µg/m³) for location |
 | `query.text` | **Yes** | - | User's natural language query |
 | `query.intent` | No | - | Query intent (not used) |
 | `query.focus_biomarkers` | No | - | Target biomarkers (not used) |
