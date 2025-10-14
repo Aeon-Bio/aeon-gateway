@@ -32,49 +32,100 @@ An API endpoint that:
 
 ### Request Format (What We Send You)
 
+**Minimum Required Fields** (what UI actually sends):
+
 ```json
 {
-  "request_id": "550e8400-e29b-41d4-a716-446655440000",
   "user_context": {
     "user_id": "sarah_chen",
     "genetics": {
+      "APOE": "e3/e3",
+      "IL6": "GG"
+    },
+    "current_biomarkers": {
+      "CRP": 0.7,
+      "IL6": 1.2
+    },
+    "location_history": [
+      {
+        "city": "San Francisco",
+        "state": "CA",
+        "start_date": "2023-01-01",
+        "end_date": "2024-01-01"
+      },
+      {
+        "city": "Los Angeles",
+        "state": "CA",
+        "start_date": "2024-01-01",
+        "end_date": null
+      }
+    ]
+  },
+  "query": {
+    "text": "How will my inflammation markers change in LA?"
+  }
+}
+```
+
+**Full Format with Optional Fields**:
+
+```json
+{
+  "request_id": "550e8400-e29b-41d4-a716-446655440000",  // OPTIONAL: Auto-generated if missing
+  "user_context": {
+    "user_id": "sarah_chen",                            // REQUIRED
+    "genetics": {                                        // REQUIRED (can be empty {})
       "GSTM1": "null",
       "GSTP1": "Val/Val",
       "TNF-alpha": "-308G/A",
       "SOD2": "Ala/Ala"
     },
-    "current_biomarkers": {
+    "current_biomarkers": {                             // REQUIRED
       "CRP": 0.7,
       "IL-6": 1.1,
       "8-OHdG": 4.2
     },
-    "location_history": [
+    "location_history": [                               // REQUIRED
       {
         "city": "San Francisco",
         "start_date": "2020-01-01",
         "end_date": "2025-08-31",
-        "avg_pm25": 7.8
+        "avg_pm25": 7.8                                 // OPTIONAL
       },
       {
         "city": "Los Angeles",
         "start_date": "2025-09-01",
         "end_date": null,
-        "avg_pm25": 34.5
+        "avg_pm25": 34.5                                // OPTIONAL
       }
     ]
   },
   "query": {
-    "text": "How will LA air quality affect my inflammation?",
-    "intent": "prediction",
-    "focus_biomarkers": ["CRP", "IL-6"]
+    "text": "How will LA air quality affect my inflammation?",  // REQUIRED
+    "intent": "prediction",                             // OPTIONAL: Not used currently
+    "focus_biomarkers": ["CRP", "IL-6"]                 // OPTIONAL: Not used currently
   },
-  "options": {
+  "options": {                                          // OPTIONAL: Future use
     "max_graph_depth": 4,
     "min_evidence_count": 2,
     "include_interventions": false
   }
 }
 ```
+
+**Field Descriptions**:
+
+| Field | Required? | Default | Description |
+|-------|-----------|---------|-------------|
+| `request_id` | No | Auto-generated UUID | Request tracking ID |
+| `user_context.user_id` | **Yes** | - | Unique user identifier |
+| `user_context.genetics` | **Yes** | - | Genetic variants (can be `{}`) |
+| `user_context.current_biomarkers` | **Yes** | - | Baseline biomarker values |
+| `user_context.location_history` | **Yes** | - | Location history (can be `[]`) |
+| `query.text` | **Yes** | - | User's natural language query |
+| `query.intent` | No | - | Query intent (not used) |
+| `query.focus_biomarkers` | No | - | Target biomarkers (not used) |
+| `options` | No | `{}` | Future configuration options |
 
 ### Response Format (What You Return)
 

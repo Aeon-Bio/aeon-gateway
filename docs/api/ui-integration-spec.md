@@ -71,25 +71,26 @@ Submit a health query and receive biomarker predictions.
 
 #### Request Format
 
+**Minimum Required Fields** (what you should send):
+
 ```json
 {
   "user_context": {
-    "user_id": "string",           // Required: unique user identifier
-    "genetics": {                  // Required: genetic variants (can be empty {})
-      "GSTM1": "null",
-      "APOE": "e3/e4",
+    "user_id": "sarah_chen",
+    "genetics": {
+      "APOE": "e3/e3",
       "IL6": "GG"
     },
-    "current_biomarkers": {        // Required: baseline measurements
-      "CRP": 0.7,                  // C-Reactive Protein (mg/L)
-      "IL6": 1.2                   // Interleukin-6 (pg/mL)
+    "current_biomarkers": {
+      "CRP": 0.7,
+      "IL6": 1.2
     },
-    "location_history": [          // Required: environmental context
+    "location_history": [
       {
         "city": "San Francisco",
         "state": "CA",
         "start_date": "2023-01-01",
-        "end_date": "2024-01-01"   // null if current
+        "end_date": "2024-01-01"
       },
       {
         "city": "Los Angeles",
@@ -99,11 +100,68 @@ Submit a health query and receive biomarker predictions.
       }
     ]
   },
-  "query": {                       // Required: user's question
+  "query": {
     "text": "How will my inflammation markers change in LA?"
   }
 }
 ```
+
+**Full Format with Optional Fields**:
+
+```json
+{
+  "request_id": "550e8400-e29b-41d4-a716-446655440000",  // OPTIONAL: Auto-generated if missing
+  "user_context": {
+    "user_id": "string",                                 // REQUIRED: unique user identifier
+    "genetics": {                                        // REQUIRED: genetic variants (can be empty {})
+      "GSTM1": "null",
+      "APOE": "e3/e4",
+      "IL6": "GG"
+    },
+    "current_biomarkers": {                             // REQUIRED: baseline measurements
+      "CRP": 0.7,                                       // C-Reactive Protein (mg/L)
+      "IL6": 1.2                                        // Interleukin-6 (pg/mL)
+    },
+    "location_history": [                               // REQUIRED: environmental context
+      {
+        "city": "San Francisco",
+        "state": "CA",
+        "start_date": "2023-01-01",
+        "end_date": "2024-01-01"                        // null if current
+      },
+      {
+        "city": "Los Angeles",
+        "state": "CA",
+        "start_date": "2024-01-01",
+        "end_date": null
+      }
+    ]
+  },
+  "query": {
+    "text": "How will my inflammation markers change in LA?",   // REQUIRED: user's question
+    "intent": "prediction",                             // OPTIONAL: Not used currently
+    "focus_biomarkers": ["CRP", "IL6"]                  // OPTIONAL: Not used currently
+  },
+  "options": {                                          // OPTIONAL: Future use
+    "horizon_days": 90,
+    "n_simulations": 1000
+  }
+}
+```
+
+**Field Descriptions**:
+
+| Field | Required? | Default | Description |
+|-------|-----------|---------|-------------|
+| `request_id` | No | Auto-generated UUID | Request tracking ID |
+| `user_context.user_id` | **Yes** | - | Unique user identifier |
+| `user_context.genetics` | **Yes** | - | Genetic variants (can be `{}`) |
+| `user_context.current_biomarkers` | **Yes** | - | Baseline biomarker values |
+| `user_context.location_history` | **Yes** | - | Location history (can be `[]`) |
+| `query.text` | **Yes** | - | User's natural language query |
+| `query.intent` | No | - | Query intent (not used) |
+| `query.focus_biomarkers` | No | - | Target biomarkers (not used) |
+| `options` | No | `{}` | Future configuration options |
 
 #### Response Format
 
