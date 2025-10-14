@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+<!--
+    Aeon Gateway Frontend Demo
+
+    Usage:
+    1. Default (uses 192.168.254.47:8000):
+       file:///path/to/frontend/index.html
+
+    2. Custom API URL via query param:
+       file:///path/to/frontend/index.html?api=http://192.168.254.47:8000
+       file:///path/to/frontend/index.html?api=http://localhost:8000
+
+    Note: CORS must be enabled on the gateway (already configured in src/main.py)
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -298,7 +311,11 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:8000';
+        // Auto-detect or use manual override
+        const API_URL = new URLSearchParams(window.location.search).get('api') ||
+                       'http://192.168.254.47:8000';  // Default to gateway network IP
+
+        console.log('🔗 Using API URL:', API_URL);
 
         async function runDemo() {
             const button = document.getElementById('runDemo');
