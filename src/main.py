@@ -59,19 +59,82 @@ async def process_query(request: QueryRequest):
 
     Accepts user context + query, returns predictions.
 
-    For now: Returns placeholder response
-    Next: Wire up temporal modeling engine
+    Flow:
+    1. Forward query to agentic system (mocked)
+    2. Build temporal model from causal graph
+    3. Generate predictions via Monte Carlo simulation
+    4. Return structured response
     """
-    # TODO: Implement temporal modeling
-    # 1. Forward to agentic system (mocked for now)
-    # 2. Build temporal model from causal graph
-    # 3. Generate predictions
-    # 4. Return structured response
+    from tests.mocks.agentic_system import MockAgenticSystem
+    from src.temporal_model import TemporalModelEngine
+    import uuid
 
-    raise HTTPException(
-        status_code=501,
-        detail="Query processing not yet implemented. Wire up temporal engine next."
-    )
+    try:
+        # Step 1: Query agentic system (mocked for hackathon)
+        agentic_system = MockAgenticSystem()
+        agentic_response = agentic_system.query(request)
+
+        if agentic_response.status != "success":
+            raise HTTPException(
+                status_code=500,
+                detail=f"Agentic system error: {agentic_response.error}"
+            )
+
+        # Step 2: Build temporal model
+        engine = TemporalModelEngine(n_simulations=1000)
+        model = engine.build_model(
+            causal_graph=agentic_response.causal_graph,
+            user_genetics=request.user_context.genetics,
+            baseline_biomarkers=request.user_context.current_biomarkers
+        )
+
+        # Step 3: Detect environmental changes from location history
+        environmental_changes = _infer_environmental_changes(request.user_context)
+
+        # Step 4: Generate predictions
+        predictions = engine.predict(
+            model=model,
+            environmental_changes=environmental_changes,
+            horizon_days=90
+        )
+
+        # Step 5: Return structured response
+        return GatewayResponse(
+            query_id=str(uuid.uuid4()),
+            user_id=request.user_context.user_id,
+            predictions=predictions,
+            causal_graph=agentic_response.causal_graph,
+            explanations=agentic_response.explanations
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Query processing failed: {str(e)}"
+        )
+
+
+def _infer_environmental_changes(user_context: "UserContext") -> dict:
+    """
+    Infer environmental changes from location history.
+
+    For demo: SF → LA means PM2.5 increases by 1.8x
+    """
+    from src.models.gateway import UserContext
+
+    # Check location history
+    location_history = user_context.location_history
+    if not location_history:
+        return {}
+
+    # Simple heuristic: If last location contains "LA" or "Los Angeles"
+    if location_history:
+        last_location = location_history[-1].get('city', '').lower()
+        if 'los angeles' in last_location or 'la' in last_location:
+            # LA has ~1.8x higher PM2.5 than SF
+            return {"PM2.5": 1.8}
+
+    return {}
 
 
 if __name__ == "__main__":
