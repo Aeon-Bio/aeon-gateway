@@ -8,16 +8,47 @@ Converts causal graphs into biomarker predictions that evolve with new observati
 
 ## Quick Start
 
-### Setup
+### For Collaborators (First Time Setup)
+
+**Automated setup** (recommended):
+```bash
+# Clone repo
+git clone https://github.com/Aeon-Bio/aeon-gateway.git
+cd aeon-gateway
+
+# Run setup script
+bash scripts/setup.sh  # macOS/Linux
+# OR
+.\scripts\setup.ps1    # Windows PowerShell
+
+# Takes ~2 minutes, installs everything
+```
+
+**Manual setup**:
+```bash
+# 1. Install uv: https://github.com/astral-sh/uv
+# 2. Create virtual environment
+uv venv
+source .venv/bin/activate  # macOS/Linux
+# OR .venv\Scripts\activate  # Windows
+
+# 3. Install dependencies
+uv pip install -r requirements.txt
+
+# 4. Verify
+pytest tests/contracts/ -v
+```
+
+See **[docs/deployment/local-development.md](./docs/deployment/local-development.md)** for detailed setup guide.
+
+### For Existing Setup
 
 ```bash
-# Activate virtual environment (created with uv)
-source .venv/bin/activate
+# Activate virtual environment
+source .venv/bin/activate  # macOS/Linux
+# OR .venv\Scripts\activate  # Windows
 
-# Install dependencies (already done)
-# uv pip install -r requirements.txt
-
-# Verify setup
+# Verify setup (if needed)
 python -c "from src.models.gateway import *; print('✓ Models OK')"
 pytest tests/contracts/ -v
 ```
@@ -25,14 +56,21 @@ pytest tests/contracts/ -v
 ### Run Server
 
 ```bash
-source .venv/bin/activate
-uvicorn src.main:app --reload --port 8000
+source .venv/bin/activate  # macOS/Linux
+# OR .venv\Scripts\activate  # Windows
+
+# Start gateway (accessible from your network)
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Visit:
-- API: http://localhost:8000
-- Docs: http://localhost:8000/docs
+**Access**:
+- Same machine: http://localhost:8000
+- Different machine: http://YOUR_IP:8000 (e.g., http://192.168.1.100:8000)
+
+**Endpoints**:
 - Health: http://localhost:8000/health
+- Interactive docs: http://localhost:8000/docs
+- API reference: http://localhost:8000/redoc
 
 ### Run Tests
 
