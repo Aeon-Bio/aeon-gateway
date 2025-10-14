@@ -80,6 +80,11 @@ async def process_query(request: QueryRequest):
     agentic_url = os.getenv("AGENTIC_SYSTEM_URL")
 
     try:
+        # Ensure request_id is set
+        if not request.request_id or request.request_id == "":
+            request.request_id = str(uuid.uuid4())
+            logger.info(f"Generated request_id: {request.request_id}")
+
         # Step 1: Query agentic system
         if agentic_url:
             # Production: Use real agentic system
