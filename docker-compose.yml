@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  aeon-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aeon-gateway
+    ports:
+      - "8001:8001"
+    environment:
+      # Override with your actual agentic system URL
+      # Use host.docker.internal to connect to services on host machine
+      - AGENTIC_SYSTEM_URL=${AGENTIC_SYSTEM_URL:-http://host.docker.internal:8000}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      # Optional: Mount .env file for local development
+      # Uncomment if you want to use .env file instead of environment variables
+      # - ./.env:/opt/app/.env:ro
+
+      # Optional: Mount source code for hot-reload (dev only)
+      # Note: Chainguard runtime image has no shell, so this is for debugging only
+      # - ./src:/opt/app/src:ro
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import httpx; httpx.get(\"http://localhost:8001/health\", timeout=5.0)'"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - aeon-network
+
+networks:
+  aeon-network:
+    driver: bridge

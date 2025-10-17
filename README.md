@@ -55,22 +55,39 @@ pytest tests/contracts/ -v
 
 ### Run Server
 
+**Option 1: Docker (Recommended for Production)**
+
+Using secure Chainguard Python images with zero CVEs:
+
+```bash
+# Build and run with docker-compose
+docker-compose up
+
+# Or build manually
+docker build -t aeon-gateway:latest .
+docker run -p 8001:8001 aeon-gateway:latest
+```
+
+See **[docs/CHAINGUARD_DEPLOYMENT.md](./docs/CHAINGUARD_DEPLOYMENT.md)** for complete Docker deployment guide.
+
+**Option 2: Local Development**
+
 ```bash
 source .venv/bin/activate  # macOS/Linux
 # OR .venv\Scripts\activate  # Windows
 
 # Start gateway (accessible from your network)
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8001
 ```
 
 **Access**:
-- Same machine: http://localhost:8000
-- Different machine: http://YOUR_IP:8000 (e.g., http://192.168.1.100:8000)
+- Same machine: http://localhost:8001
+- Different machine: http://YOUR_IP:8001 (e.g., http://192.168.1.100:8001)
 
 **Endpoints**:
-- Health: http://localhost:8000/health
-- Interactive docs: http://localhost:8000/docs
-- API reference: http://localhost:8000/redoc
+- Health: http://localhost:8001/health
+- Interactive docs: http://localhost:8001/docs
+- API reference: http://localhost:8001/redoc
 
 ### Run Tests
 
